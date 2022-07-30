@@ -24,19 +24,22 @@ const Login = ({}) => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const verifyLogin = (value) => {
+    setLoading(true);
     axios
       .post(
         `${hostUrl}/auth/login`,
         {},
         {
           headers: {
-            payload: btoa(`${value?.email}:${value?.password}`),
+            apiKey: btoa(`${value?.email}:${value?.password}`),
           },
         }
       )
       .then((res) => {
         if (res?.data?.success) {
           setLoading(false);
+          localStorage.setItem("accessToken", res?.data?.accessToken);
+          localStorage.setItem("refreshToken", res?.data?.refreshToken);
           router.push(`/`);
         }
       })

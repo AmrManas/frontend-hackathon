@@ -15,6 +15,7 @@ const OtpVerification = () => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const verifyOtp = (values) => {
+    setLoading(true);
     axios
       .post(
         `${hostUrl}/auth/verifyUser`,

@@ -16,6 +16,7 @@ const Signup = () => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const registerUser = (values) => {
+    setLoading(true);
     axios
       .post(
         `${hostUrl}/auth/register`,
