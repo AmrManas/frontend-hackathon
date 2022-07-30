@@ -1,13 +1,14 @@
 import "../styles/globals.css";
 
 import "antd/dist/antd.css";
-<<<<<<< HEAD
-import { Spin } from "antd";
+import { Layout, Spin } from "antd";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { hostUrl } from "../hostUrl";
+import TopBar from "../components/Layouts/TopBar";
+import Sidebars from "../components/Layouts/Sidebars";
 
-function MyApp({ Component, pageProps }) {
+function MyApp({ Component, pageProps, ...appProps }) {
   const [loading, setLoading] = useState(false);
   const callCurrentUser = () => {
     console.log(
@@ -49,30 +50,28 @@ function MyApp({ Component, pageProps }) {
       callCurrentUser();
     }
   }, []);
-  return (
-    <Spin spinning={loading}>
-      {" "}
-      <Component {...pageProps} />
-    </Spin>
-=======
-import { Layout } from "antd";
-import Sidebars from "../components/Layouts/Sidebars";
-import TopBar from "../components/Layouts/TopBar";
+  if (
+    [`/user/signup`, "/user/login", "/user/otpverification"].includes(
+      appProps.router.pathname
+    )
+  )
+    return <Component {...pageProps} />;
 
-function MyApp({ Component, pageProps }) {
   return (
     <>
       <Layout>
-        <div>
+        <div className="">
           <TopBar />
           <div className="flex bg-white">
             <Sidebars />
-            <Component {...pageProps} />
+            <Spin spinning={loading}>
+              {" "}
+              <Component {...pageProps} />
+            </Spin>
           </div>
         </div>
       </Layout>
     </>
->>>>>>> b721a74d280683b32f921a030d11bd4519fe6331
   );
 }
 
