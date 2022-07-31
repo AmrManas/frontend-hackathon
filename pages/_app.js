@@ -51,26 +51,29 @@ function MyApp({ Component, pageProps, ...appProps }) {
     }
   }, []);
   if (
-    [`/user/signup`, "/user/login", "/user/otpverification"].includes(
-      appProps.router.pathname
-    )
+    [
+      `/user/signup`,
+      "/user/login",
+      "/user/otpverification",
+      "/intime",
+    ].includes(appProps.router.pathname)
   )
     return <Component {...pageProps} />;
 
   return (
     <>
-      <Layout>
-        <div className="">
-          <TopBar />
-          <div className="flex bg-white">
-            <Sidebars />
-            <Spin spinning={loading}>
-              {" "}
+      <Spin spinning={loading}>
+        <Layout>
+          <div className="">
+            <TopBar />
+            <div className="">
+              <Sidebars />
+
               <Component {...pageProps} />
-            </Spin>
+            </div>
           </div>
-        </div>
-      </Layout>
+        </Layout>
+      </Spin>
     </>
   );
 }

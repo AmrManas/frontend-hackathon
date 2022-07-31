@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@lottiefiles/lottie-player": "^1.5.7",
     "antd": "^4.22.2",
     "axios": "^0.27.2",
     "next": "12.2.3",

@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Avatar, Button, Col, Divider, Row, Spin, Tabs } from "antd";
+import { Avatar, Button, Col, Divider, message, Row, Spin, Tabs } from "antd";
 import axios from "axios";
 import { hostUrl } from "../../hostUrl";
+import Image from "next/image";
 // import { io } from "socket.io-client";
 
 // socket = io(`${hostUrl}/user/me/k`);
@@ -10,38 +11,38 @@ const MarkAttendance = () => {
   const [loading, setLoading] = useState(false);
   const [count, setCount] = useState(0);
   const [data, setData] = useState({});
-  // const getAttendenceQrCode = () => {
-  //   setLoading(true);
-  //   const headers = {
-  //     accessToken: localStorage.getItem("accessToken"),
-  //   };
-  //   console.log("headers", headers);
-  //   axios
-  //     .get(
-  //       `${hostUrl}/user/me/k`,
-
-  //       {
-  //         headers: {
-  //           accessToken: localStorage.getItem("accessToken"),
-  //         },
-  //       }
-  //     )
-  //     .then((res) => {
-  //       console.log(res);
-  //       setLoading(false);
-  //     })
-  //     .catch((err) => {
-  //       if (err) {
-  //         setLoading(false);
-  //       }
-  //     });
-  // };
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //     getAttendenceQrCode();
-  //     setCount(count + 1);
-  //   }, 5000);
-  // }, [count]);
+  const [isIntimeTime, setIsIntimeTime] = useState({});
+  const getAttendence = () => {
+    setLoading(true);
+    const headers = {
+      accessToken: localStorage.getItem("accessToken"),
+    };
+    console.log("headers", headers);
+    axios
+      .get(`${hostUrl}/user/getTime`, {
+        headers: {
+          id: localStorage.getItem("accessToken"),
+        },
+      })
+      .then((res) => {
+        console.log(res);
+        setIsIntimeTime({ ...res?.data });
+        setLoading(false);
+      })
+      .catch((err) => {
+        if (err) {
+          setLoading(false);
+        }
+      });
+  };
+  useEffect(() => {
+    if (!isIntimeTime?.enabled) {
+      setTimeout(() => {
+        getAttendence();
+        setCount(count + 1);
+      }, 3000);
+    }
+  }, [count]);
 
   const getAttendenceQrCode = () => {
     setLoading(true);
@@ -75,7 +76,7 @@ const MarkAttendance = () => {
   }, []);
 
   return (
-    <div className="mx-60 my-20">
+    <div className=" my-20">
       <div className="">
         <h1 className="text-4xl font-medium text-[#1890ff]">Mark Attendance</h1>
       </div>
@@ -86,24 +87,79 @@ const MarkAttendance = () => {
             <div className="main bg-white  shadow-md">
               <div className="flex justify-center items-center">
                 <div className="">
+                  {/* <Image src={data?.data} alt="..." width={200} height={200} /> */}
                   <Avatar
                     src={data?.data}
-                    size={200}
+                    size={500}
                     shape="square"
                     style={{ background: "#34bdeb" }}
                   />
                 </div>
               </div>
               <div className="px-20 mb-5">
-                <Button
-                  type="primary"
-                  style={{ width: "100%" }}
-                  className=""
-                  size="large"
-                  disabled
-                >
-                  In time
-                </Button>
+                {"" ? (
+                  <Button
+                    type="primary"
+                    style={{ width: "100%" }}
+                    className=""
+                    size="large"
+                    onClick={axios
+                      .put(
+                        `${hostUrl}/user/updateTime`,
+                        {
+                          inTime: moment()?.toISOString(),
+                        },
+                        {
+                          headers: {
+                            id: localStorage.getItem("accessToken"),
+                          },
+                        }
+                      )
+                      .then((res) => {
+                        if (res) {
+                          message.success(`Your in time is successfully saved`);
+                        }
+                      })
+                      .catch((err) => {
+                        if (err) {
+                        }
+                      })}
+                    disabled={!isIntimeTime?.enabled}
+                  >
+                    In time
+                  </Button>
+                ) : (
+                  <Button
+                    type="primary"
+                    style={{ width: "100%" }}
+                    className=""
+                    size="large"
+                    onClick={axios
+                      .put(
+                        `${hostUrl}/user/updateTime`,
+                        {
+                          inTime: moment()?.toISOString(),
+                        },
+                        {
+                          headers: {
+                            id: localStorage.getItem("accessToken"),
+                          },
+                        }
+                      )
+                      .then((res) => {
+                        if (res) {
+                          message.success(`Your in time is successfully saved`);
+                        }
+                      })
+                      .catch((err) => {
+                        if (err) {
+                        }
+                      })}
+                    disabled={!isIntimeTime?.enabled}
+                  >
+                    In time
+                  </Button>
+                )}
               </div>
               <div className="flex  border-t pt-2 justify-between">
                 <div className="flex">
