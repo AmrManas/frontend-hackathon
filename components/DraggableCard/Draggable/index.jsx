@@ -65,7 +65,8 @@ const Draggable = ({ children, onDrop, payload }) => {
           <div className="text-xs font-medium text-green-500">
             Out Time :
             <span className="">
-              {payload?.timeSheet?.endTime && payload?.timeSheet?.endTime}
+              {payload?.timeSheet?.endTime &&
+                moment(payload?.timeSheet?.endTime).format("LT")}
             </span>
           </div>
         )}

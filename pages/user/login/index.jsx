@@ -17,12 +17,15 @@ import Link from "next/link";
 import axios from "axios";
 import { hostUrl } from "../../../hostUrl";
 import { useRouter } from "next/router";
+import { useAtom } from "jotai";
+import { userCurrent } from "../../../store/currentUser";
 
 const Login = ({}) => {
   const [form] = Form.useForm();
   const [error, setError] = useState(false);
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [, setUser] = useAtom(userCurrent);
   const verifyLogin = (value) => {
     setLoading(true);
     axios
@@ -41,6 +44,31 @@ const Login = ({}) => {
           localStorage.setItem("accessToken", res?.data?.accessToken);
           localStorage.setItem("refreshToken", res?.data?.refreshToken);
           router.push(`/MarkAttendance`);
+
+          const headers = {
+            accessToken: localStorage.getItem("accessToken"),
+          };
+
+          axios
+            .get(
+              `${hostUrl}/user/me`,
+
+              {
+                headers: {
+                  accessToken: localStorage.getItem("accessToken"),
+                },
+              }
+            )
+            .then((res) => {
+              console.log(res);
+              setUser(res?.data);
+              // if (res?.data?.success) {
+
+              //   localStorage.setItem("accessToken", res?.data?.accessToken);
+              //   localStorage.setItem("refreshToken", res?.data?.refreshToken);
+              //   router.push(`/`);
+              // }
+            });
         }
       })
       .catch((err) => {
