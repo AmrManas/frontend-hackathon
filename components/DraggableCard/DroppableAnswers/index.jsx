@@ -47,6 +47,12 @@ const Droppable = ({ allowedDropEffect, getAllData }) => {
     const payload = {
       panel,
     };
+    if (panel === "todo") {
+      payload.timeSheet = {
+        startTime: "",
+        endTime: "",
+      };
+    }
 
     if (panel === "doing") {
       payload.timeSheet = { startTime: moment().toISOString() };
@@ -68,7 +74,7 @@ const Droppable = ({ allowedDropEffect, getAllData }) => {
   return (
     <>
       <DroppableItems
-        name={<span className="font-medium px-2 py-2">Todo</span>}
+        name={<span className="font-medium px-2 py-2 text-blue-500">Todo</span>}
         items={itemTodo}
         onDrop={(item) => {
           apiCall(item, "todo");
@@ -78,7 +84,9 @@ const Droppable = ({ allowedDropEffect, getAllData }) => {
         allowedDropEffect={allowedDropEffect}
       />
       <DroppableItems
-        name={<span className="font-medium px-2 py-2">Doing</span>}
+        name={
+          <span className="font-medium px-2 py-2 text-yellow-500">Doing</span>
+        }
         items={itemDoing}
         onDrop={(item) => {
           apiCall(item, "doing");
@@ -87,7 +95,9 @@ const Droppable = ({ allowedDropEffect, getAllData }) => {
         allowedDropEffect={allowedDropEffect}
       />
       <DroppableItems
-        name={<span className="font-medium px-2 py-2">Done</span>}
+        name={
+          <span className="font-medium px-2 py-2 text-green-500">Done</span>
+        }
         items={itemDone}
         onDrop={(item) => {
           apiCall(item, "done");
@@ -107,15 +117,8 @@ function DroppableItems({ name, items, onDrop, allowedDropEffect }) {
       accept: ItemTypes.BOX,
 
       drop: (item, monitor) => {
-        // console.log("item", item);
-        // setItems((p) => [...p, item]);
         const data = monitor.getItem();
-        // console.log("data", data);
-        // if (item) {
-        //   axios
-        //     .put(`${hostUrl}/user/updateTask/${item?._id}`, { ...item })
-        //     .then((res) => {});
-        // }
+
         onDrop(item);
 
         return {

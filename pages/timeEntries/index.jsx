@@ -55,7 +55,11 @@ const TimeEntries = () => {
       <div className="flex justify-center mt-5">
         <DraggableQuestions getAllData={getAllData} />
       </div>
-      <AddTask isModal={isModal} setIsModal={setIsModal} />
+      <AddTask
+        isModal={isModal}
+        setIsModal={setIsModal}
+        getAllData={getAllData}
+      />
     </div>
   );
 };

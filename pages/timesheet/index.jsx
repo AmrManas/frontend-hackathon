@@ -35,6 +35,16 @@ const TimeSheet = () => {
       title: "In time",
       dataIndex: "inTime",
       key: "intime",
+      render: (data) => (
+        <div>
+          <Tag
+            style={{ background: "green", color: "white", fontWeight: 600 }}
+            className="bg-green-500 text-white font-medium"
+          >
+            {data}
+          </Tag>
+        </div>
+      ),
     },
     {
       title: "Out time ",

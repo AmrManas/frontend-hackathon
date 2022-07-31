@@ -1,3 +1,4 @@
+import moment from "moment";
 import React from "react";
 import { useDrag } from "react-dnd";
 
@@ -17,6 +18,7 @@ const boxstyle = {
 };
 
 const Draggable = ({ children, onDrop, payload }) => {
+  console.log("payload", payload);
   const [{ opacity }, drag] = useDrag(
     () => ({
       type: ItemTypes.BOX,
@@ -48,7 +50,26 @@ const Draggable = ({ children, onDrop, payload }) => {
   );
   return (
     <div ref={drag} style={{ ...boxstyle, opacity }} className="shadow-md ">
-      {children}
+      <div>{children}</div>
+      <div className="flex gap-3 my-2">
+        {payload?.timeSheet?.startTime && (
+          <div className="text-xs font-medium text-red-400">
+            In time :
+            <span className="">
+              {payload?.timeSheet?.startTime &&
+                moment(payload?.timeSheet?.startTime).format("LT")}
+            </span>
+          </div>
+        )}
+        {payload?.timeSheet?.endTime && (
+          <div className="text-xs font-medium text-green-500">
+            Out Time :
+            <span className="">
+              {payload?.timeSheet?.endTime && payload?.timeSheet?.endTime}
+            </span>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
