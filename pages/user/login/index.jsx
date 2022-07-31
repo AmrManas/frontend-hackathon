@@ -40,7 +40,7 @@ const Login = ({}) => {
           setLoading(false);
           localStorage.setItem("accessToken", res?.data?.accessToken);
           localStorage.setItem("refreshToken", res?.data?.refreshToken);
-          router.push(`/`);
+          router.push(`/MarkAttendance`);
         }
       })
       .catch((err) => {
