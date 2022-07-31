@@ -4,7 +4,7 @@ import Link from "next/link";
 import "antd/dist/antd.css";
 // import { Layout } from "antd";
 import Sidebars from "../components/Layouts/Sidebars";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import TopBar from "../components/Layouts/TopBar";
 import {
   LaptopOutlined,
@@ -12,8 +12,64 @@ import {
   UserOutlined,
 } from "@ant-design/icons";
 import { Breadcrumb, Layout, Menu } from "antd";
+import axios from "axios";
+import { hostUrl } from "../hostUrl";
+import { useAtom } from "jotai";
+import { userCurrent } from "../store/currentUser";
 
-function MyApp({ Component, pageProps }) {
+function MyApp({ Component, pageProps, ...appProps }) {
+  const [loading, setLoading] = useState(false);
+  const [, setUser] = useAtom(userCurrent);
+  const callCurrentUser = () => {
+    console.log(
+      'localStorage.getItem("accessToken"),',
+      localStorage.getItem("accessToken")
+    );
+    setLoading(true);
+    const headers = {
+      accessToken: localStorage.getItem("accessToken"),
+    };
+    console.log("headers", headers);
+    axios
+      .get(
+        `${hostUrl}/user/me`,
+
+        {
+          headers: {
+            accessToken: localStorage.getItem("accessToken"),
+          },
+        }
+      )
+      .then((res) => {
+        console.log(res);
+        setUser(res?.data);
+        // if (res?.data?.success) {
+        setLoading(false);
+        //   localStorage.setItem("accessToken", res?.data?.accessToken);
+        //   localStorage.setItem("refreshToken", res?.data?.refreshToken);
+        //   router.push(`/`);
+        // }
+      })
+      .catch((err) => {
+        if (err) {
+          setLoading(false);
+        }
+      });
+  };
+  useEffect(() => {
+    if (localStorage.getItem("accessToken")) {
+      callCurrentUser();
+    }
+  }, []);
+  if (
+    [
+      `/user/signup`,
+      "/user/login",
+      "/user/otpverification",
+      "/intime",
+    ].includes(appProps.router.pathname)
+  )
+    return <Component {...pageProps} />;
   const SidebarArray = [
     {
       name: "Dashboard",
@@ -22,7 +78,7 @@ function MyApp({ Component, pageProps }) {
     },
     {
       name: "Project",
-      link: "/project",
+      link: "/",
       // icon: <MdDashboard />
     },
     {
@@ -31,13 +87,13 @@ function MyApp({ Component, pageProps }) {
       // icon: <MdDashboard />
     },
     {
-      name: "Screenshot",
-      link: "/screenshot",
+      name: "Mark Attendance",
+      link: "/MarkAttendance",
       // icon: <MdDashboard />
     },
     {
-      name: "Break",
-      link: "/break",
+      name: "Screenshot",
+      link: "/",
       // icon: <MdDashboard />
     },
   ];

@@ -3,6 +3,9 @@ import { Avatar, Button, Col, Divider, message, Row, Spin, Tabs } from "antd";
 import axios from "axios";
 import { hostUrl } from "../../hostUrl";
 import Image from "next/image";
+import moment from "moment";
+import { useAtom } from "jotai";
+import { userCurrent } from "../../store/currentUser";
 // import { io } from "socket.io-client";
 
 // socket = io(`${hostUrl}/user/me/k`);
@@ -12,6 +15,8 @@ const MarkAttendance = () => {
   const [count, setCount] = useState(0);
   const [data, setData] = useState({});
   const [isIntimeTime, setIsIntimeTime] = useState({});
+  const [user, setUser] = useAtom(userCurrent);
+  console.log("user", user);
   const getAttendence = () => {
     setLoading(true);
     const headers = {
@@ -90,40 +95,71 @@ const MarkAttendance = () => {
                   {/* <Image src={data?.data} alt="..." width={200} height={200} /> */}
                   <Avatar
                     src={data?.data}
-                    size={500}
+                    size={450}
                     shape="square"
                     style={{ background: "#34bdeb" }}
                   />
                 </div>
               </div>
               <div className="px-20 mb-5">
-                {"" ? (
+                {user?.user.is_time_active && !user?.user?.inTime ? (
                   <Button
                     type="primary"
                     style={{ width: "100%" }}
                     className=""
                     size="large"
-                    onClick={axios
-                      .put(
-                        `${hostUrl}/user/updateTime`,
-                        {
-                          inTime: moment()?.toISOString(),
-                        },
-                        {
-                          headers: {
-                            id: localStorage.getItem("accessToken"),
+                    onClick={() =>
+                      axios
+                        .put(
+                          `${hostUrl}/user/updateTime`,
+                          {
+                            inTime: moment()?.toISOString(),
                           },
-                        }
-                      )
-                      .then((res) => {
-                        if (res) {
-                          message.success(`Your in time is successfully saved`);
-                        }
-                      })
-                      .catch((err) => {
-                        if (err) {
-                        }
-                      })}
+                          {
+                            headers: {
+                              id: btoa(user?.user?._id),
+                            },
+                          }
+                        )
+                        .then((res) => {
+                          if (res) {
+                            message.success(
+                              `Your in time is successfully saved`
+                            );
+
+                            setLoading(true);
+                            const headers = {
+                              accessToken: localStorage.getItem("accessToken"),
+                            };
+                            console.log("headers", headers);
+                            axios
+                              .get(
+                                `${hostUrl}/user/me`,
+
+                                {
+                                  headers: {
+                                    accessToken:
+                                      localStorage.getItem("accessToken"),
+                                  },
+                                }
+                              )
+                              .then((res) => {
+                                setUser(res?.data);
+
+                                setLoading(false);
+                              })
+                              .catch((err) => {
+                                if (err) {
+                                  setLoading(false);
+                                }
+                              });
+                          }
+                        })
+                        .catch((err) => {
+                          if (err) {
+                          }
+                        })
+                    }
                     disabled={!isIntimeTime?.enabled}
                   >
                     In time
@@ -134,30 +170,60 @@ const MarkAttendance = () => {
                     style={{ width: "100%" }}
                     className=""
                     size="large"
-                    onClick={axios
-                      .put(
-                        `${hostUrl}/user/updateTime`,
-                        {
-                          inTime: moment()?.toISOString(),
-                        },
-                        {
-                          headers: {
-                            id: localStorage.getItem("accessToken"),
+                    disabled={user?.user?.outTime}
+                    onClick={() =>
+                      axios
+                        .put(
+                          `${hostUrl}/user/updateTime`,
+                          {
+                            outTime: moment()?.toISOString(),
                           },
-                        }
-                      )
-                      .then((res) => {
-                        if (res) {
-                          message.success(`Your in time is successfully saved`);
-                        }
-                      })
-                      .catch((err) => {
-                        if (err) {
-                        }
-                      })}
-                    disabled={!isIntimeTime?.enabled}
+                          {
+                            headers: {
+                              id: btoa(user?.user?._id),
+                            },
+                          }
+                        )
+                        .then((res) => {
+                          if (res) {
+                            message.success(
+                              `Your out time is successfully saved`
+                            );
+                            setLoading(true);
+                            const headers = {
+                              accessToken: localStorage.getItem("accessToken"),
+                            };
+                            console.log("headers", headers);
+                            axios
+                              .get(
+                                `${hostUrl}/user/me`,
+
+                                {
+                                  headers: {
+                                    accessToken:
+                                      localStorage.getItem("accessToken"),
+                                  },
+                                }
+                              )
+                              .then((res) => {
+                                setUser(res?.data);
+
+                                setLoading(false);
+                              })
+                              .catch((err) => {
+                                if (err) {
+                                  setLoading(false);
+                                }
+                              });
+                          }
+                        })
+                        .catch((err) => {
+                          if (err) {
+                          }
+                        })
+                    }
                   >
-                    In time
+                    Out time
                   </Button>
                 )}
               </div>
