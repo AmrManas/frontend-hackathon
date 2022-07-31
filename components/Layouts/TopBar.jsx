@@ -3,9 +3,12 @@ import React from "react";
 import Image from "next/image";
 
 import MainLogo from "../../images/main-logo.png";
+import { useAtom } from "jotai";
+import { userCurrent } from "../../store/currentUser";
 
 const TopBar = () => {
   const { Search } = Input;
+  const [user] = useAtom(userCurrent);
   return (
     <div className=" bg-white ">
       <div className="flex gap-3 justify-between w-full p-3 rounded shadow">
@@ -15,9 +18,11 @@ const TopBar = () => {
         {/* <div className="w-[60%] ">
           <Search style={{ borderRadius: "5px" }} />
         </div> */}
-        <div className="flex gap-2">
-          <Button type="primary">Break</Button>
-          <Avatar className="bg-blue-500">GS</Avatar>
+        <div className="flex gap-2 items-center">
+          <span className="font-medium text-gray-900 capitalize ">
+            {user?.user?.name}
+          </span>
+          <Avatar className="bg-blue-500">{user?.user?.name[0]}</Avatar>
         </div>
       </div>
     </div>

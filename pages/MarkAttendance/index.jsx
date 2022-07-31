@@ -239,7 +239,7 @@ const MarkAttendance = () => {
 
                 <div className="flex ">
                   <p className="mt-2 mr-4 " style={{ fontWeight: "500" }}>
-                    joshanpreet.singh@simbaquartz.com
+                    {user?.user?.email}
                   </p>
                 </div>
               </div>
