@@ -102,7 +102,7 @@ const MarkAttendance = () => {
                 </div>
               </div>
               <div className="px-20 mb-5">
-                {!user?.user?.inTime ? (
+                {!user?.user?.inTime && !user?.user?.outTime ? (
                   <Button
                     type="primary"
                     style={{ width: "100%" }}
