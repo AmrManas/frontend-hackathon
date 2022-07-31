@@ -1,26 +1,59 @@
 import DraggableQuestions from "../../components/DraggableCard";
-import React, { useState } from "react";
 
 import { Button } from "antd";
 import AddTask from "./AddTask";
-
+import {
+  todoCardItems,
+  doingCardItems,
+  doneCardItems,
+} from "../../store/todos";
+import { hostUrl } from "../../hostUrl";
+import React, { useEffect, useState } from "react";
+import { useAtom } from "jotai";
+import axios from "axios";
 
 const TimeEntries = () => {
-  const [isModal, setIsModal] = useState(false)
+  const [isModal, setIsModal] = useState(false);
+  const [itemTodo, setItemTodo] = useAtom(todoCardItems);
+  const [itemDoing, setItemDoing] = useAtom(doingCardItems);
+  const [itemDone, setItemDone] = useAtom(doneCardItems);
+
+  const getAllData = () => {
+    axios
+      .get(`${hostUrl}/user/getAllTask`)
+      .then((res) => {
+        // console.log("res", res);
+        setItemTodo(res?.data?.data?.filter((fil) => fil?.panel === "todo"));
+        setItemDoing(res?.data?.data?.filter((fil) => fil?.panel === "doing"));
+        setItemDone(res?.data?.data?.filter((fil) => fil?.panel === "done"));
+      })
+      .catch((err) => {
+        // console.log("err", err);
+      });
+  };
+
+  useEffect(() => {
+    getAllData();
+    // debugger
+  }, []);
   return (
-    <div className="w-full bg-gray-100  py-2 px-2 my-2 font-medium text-lg bg-white shadow rounded">
-      <div className="flex justify-between">
+    <div className="w-full h-[89vh] bg-gray-100  ">
+      <div className="flex justify-between py-2 px-2 my-2 font-medium text-lg bg-white shadow rounded item-center">
         <div className="">
           <p>Time Entries </p>
         </div>
         <div>
-          <Button onClick={()=>{
-            setIsModal(true)
-          }}>Add Task</Button>
+          <Button
+            onClick={() => {
+              setIsModal(true);
+            }}
+          >
+            Add Task
+          </Button>
         </div>
       </div>
       <div className="flex justify-center mt-5">
-        <DraggableQuestions />
+        <DraggableQuestions getAllData={getAllData} />
       </div>
       <AddTask isModal={isModal} setIsModal={setIsModal} />
     </div>
