@@ -11,14 +11,14 @@ const Intime = () => {
   console.log("router?.query", router?.query?.id);
   const getAttendenceQrCode = () => {
     setLoading(true);
-    if (router?.query?.id) {
+    if (router?.query?.intime) {
       axios
         .put(
           `${hostUrl}/user/updateTime`,
-          {},
+          { is_time_active: true },
           {
             headers: {
-              id: router.query?.id,
+              id: router.query?.intime,
             },
           }
         )
@@ -35,7 +35,8 @@ const Intime = () => {
   };
   useEffect(() => {
     getAttendenceQrCode();
-  }, [router?.query?.id]);
+    console.log("run");
+  }, [router?.query?.intime]);
 
   return (
     <div className="h-screen  ">
