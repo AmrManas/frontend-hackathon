@@ -102,7 +102,7 @@ const MarkAttendance = () => {
                 </div>
               </div>
               <div className="px-20 mb-5">
-                {user?.user.is_time_active && !user?.user?.inTime ? (
+                {!user?.user?.inTime ? (
                   <Button
                     type="primary"
                     style={{ width: "100%" }}
@@ -165,66 +165,69 @@ const MarkAttendance = () => {
                     In time
                   </Button>
                 ) : (
-                  <Button
-                    type="primary"
-                    style={{ width: "100%" }}
-                    className=""
-                    size="large"
-                    disabled={user?.user?.outTime}
-                    onClick={() =>
-                      axios
-                        .put(
-                          `${hostUrl}/user/updateTime`,
-                          {
-                            outTime: moment()?.toISOString(),
-                          },
-                          {
-                            headers: {
-                              id: btoa(user?.user?._id),
+                  user?.user?.inTime && (
+                    <Button
+                      type="primary"
+                      style={{ width: "100%" }}
+                      className=""
+                      size="large"
+                      disabled={user?.user?.outTime}
+                      onClick={() =>
+                        axios
+                          .put(
+                            `${hostUrl}/user/updateTime`,
+                            {
+                              outTime: moment()?.toISOString(),
                             },
-                          }
-                        )
-                        .then((res) => {
-                          if (res) {
-                            message.success(
-                              `Your out time is successfully saved`
-                            );
-                            setLoading(true);
-                            const headers = {
-                              accessToken: localStorage.getItem("accessToken"),
-                            };
-                            console.log("headers", headers);
-                            axios
-                              .get(
-                                `${hostUrl}/user/me`,
+                            {
+                              headers: {
+                                id: btoa(user?.user?._id),
+                              },
+                            }
+                          )
+                          .then((res) => {
+                            if (res) {
+                              message.success(
+                                `Your out time is successfully saved`
+                              );
+                              setLoading(true);
+                              const headers = {
+                                accessToken:
+                                  localStorage.getItem("accessToken"),
+                              };
+                              console.log("headers", headers);
+                              axios
+                                .get(
+                                  `${hostUrl}/user/me`,
 
-                                {
-                                  headers: {
-                                    accessToken:
-                                      localStorage.getItem("accessToken"),
-                                  },
-                                }
-                              )
-                              .then((res) => {
-                                setUser(res?.data);
+                                  {
+                                    headers: {
+                                      accessToken:
+                                        localStorage.getItem("accessToken"),
+                                    },
+                                  }
+                                )
+                                .then((res) => {
+                                  setUser(res?.data);
 
-                                setLoading(false);
-                              })
-                              .catch((err) => {
-                                if (err) {
                                   setLoading(false);
-                                }
-                              });
-                          }
-                        })
-                        .catch((err) => {
-                          if (err) {
-                          }
-                        })
-                    }
-                  >
-                    Out time
-                  </Button>
+                                })
+                                .catch((err) => {
+                                  if (err) {
+                                    setLoading(false);
+                                  }
+                                });
+                            }
+                          })
+                          .catch((err) => {
+                            if (err) {
+                            }
+                          })
+                      }
+                    >
+                      Out time
+                    </Button>
+                  )
                 )}
               </div>
               <div className="flex  border-t pt-2 justify-between">
